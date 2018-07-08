@@ -117,15 +117,14 @@ int dic::dictAdd(int dictidx,void *key,void *obj){
 //find dictEntry from key
 void * dic::dict_find(int dictidx,int tableidx,void *key){
     dictEntry *fetch=NULL; 
-    for(unsigned int i=0;i<dc[dictidx].ht[tableidx].size;i++){
-        fetch=dc[dictidx].ht[tableidx].table[i]; 
-        while(fetch!=NULL)
-        {
-            if(strcmp((char *)((const robj *)fetch->key)->ptr,(char *)((const robj *)key)->ptr)==0)
-                return (void *)fetch;
-            fetch=fetch->next;
-        }    
-    }
+    fetch=dc[dictidx].ht[tableidx].table[dic::murmurhash2(key)]; 
+    while(fetch!=NULL)
+    {
+        if(strcmp((char *)((const robj *)fetch->key)->ptr,(char *)((const robj *)key)->ptr)==0)
+            return (void *)fetch;
+        fetch=fetch->next;
+    }    
+
     return NULL;
 }
 
